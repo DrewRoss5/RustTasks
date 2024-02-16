@@ -184,15 +184,28 @@ fn main() {
             },
             "del"=>{
                 // ensure exacty one ID was provided and that it's valid
-                if arguments.len() != 3{
-                    println!("Please provide exactly one task ID to delete");
+                if arguments.len() < 3{
+                    println!("Please provide at least one task ID to delete");
                     exit(-1)
                 }
-                let result = arguments[2].parse::<i32>();
+                let mut id_list: Vec<i32> = Vec::new();
+                let result = parse_task_ids(&arguments, &mut id_list, (tasks.len() - 1) as i32);
+
                 match result{
-                    Ok(id)=>{
-                        tasks.remove(id as usize);
-                        println!("Task deleted succesfully")
+                    Ok(_)=>{
+                        let mut modifier = 0;
+                        // sort the list so decrementing the index by one to access a tasks new position after a task deletion will work
+                        id_list.sort();
+                        for i in id_list{
+                            tasks.remove((i - modifier) as usize);
+                            modifier += 1;
+                        }
+                        if arguments.len() == 3{
+                            println!("Task deleted successfuly")
+                        }
+                        else{
+                            println!("Tasks deleted successfuly")
+                        }
                     }
                     Err(_)=>{
                         println!("Invalid task ID");
