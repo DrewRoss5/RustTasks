@@ -23,11 +23,11 @@ At the time of writing, there is no official install script, so the best way to 
   <dt>help</dt>
   <dd>Prints a list of available commands and their functions.</dd>
   <dt>view</dt>
-  <dd>Prints each task's id, name and completion status.</dd>
+  <dd>Prints each task's ID, name and completion status.</dd>
   <dt>new &lt;task name(s)&gt;</dt>
   <dd>Creates a new task for each name. Names should be passed as strings in quotations and seperated by spaces</dd>
   <dt>complete &lt;task id(s)&gt;</dt>
-  <dd>Completes the task for each provided id. Accepts any number of ids, seperated with spaces</dd>
-  <dt>del &lt;task id&gt;</dt>
-  <dd>Deletes the task with the given id. Currently accepts only one ID</dd>
+  <dd>Completes the task for each provided ID. Accepts any number of ids, seperated with spaces</dd>
+  <dt>del &lt;task id(s)&gt;</dt>
+  <dd>Deletes the task for each provided ID</dd>
 </dl>
