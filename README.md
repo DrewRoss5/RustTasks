@@ -1,9 +1,5 @@
 # RustTodo
 A CLI ToDo list utility created in Rust
-# Roadmap:
-<ul>
-  <li>Create an install script</li>
-</ul>
 
 # Task File Format
 Files for this program follow a very simple formt:<br>
