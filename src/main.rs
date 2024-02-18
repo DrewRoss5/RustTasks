@@ -63,7 +63,7 @@ fn read_task_file(file: &fs::File) -> Result<Vec<Task>, Error>{
             Ok(task) => tasks.push(task),
             Err(_) => return Err(Error)
         }
-        id += 1;
+        id += 1
     }
     Ok(tasks)
 }
@@ -96,6 +96,20 @@ fn parse_task_ids(arguments: &Vec<String>, parsed: &mut Vec<i32>, max: i32 ) -> 
     Ok(())
 }
 
+fn print_help(){
+    println!("Available Commands:");
+    let task_count = 5;
+    let task_names = ["help", "view", "new", "complete", "del"];
+    let task_params = ["", "", "<task name(s)>", "<task id(s)>", "<task id>"];
+    let task_descriptions = ["Display a list of available commands", "Display all current tasks and their statuses",
+                                        "Create a new task for each of the provided names", "Mark the task at each given id complete", 
+                                        "Delete the task at the given id"];
+    println!("{0:<10} {1:<20}{2}\n", "Command", "Parameters", "Description");
+    for i in 0..task_count{
+        println!("{0:<9} {1:<20}{2}", task_names[i], task_params[i], task_descriptions[i])
+    }
+}
+
 fn main() {
     let file_path = "tasks.txt";
     // attempt to open the task file 
@@ -107,28 +121,19 @@ fn main() {
         // validate user arguments
         let arguments: Vec<String> = args().collect();
         if arguments.len() < 2{
-            println!("Please provide at least one argument");
-            exit(-1)
+            print_help();
+            exit(0)
         }
         // run the user's chosen command
         let mut tasks = tmp.unwrap();
         match arguments[1].as_str() {
             "help"=>{
-                let task_count = 5;
-                let task_names = ["help", "view", "new", "complete", "del"];
-                let task_params = ["", "", "<task name(s)>", "<task id(s)>", "<task id>"];
-                let task_descriptions = ["Display a list of available commands", "Display all current tasks and their statuses",
-                                                    "Create a new task for each of the provided names", "Mark the task at each given id complete", 
-                                                    "Delete the task at the given id"];
-                println!("{0:<10} {1:<20}{2}\n", "Command", "Parameters", "Description");
-                for i in 0..task_count{
-                    println!("{0:<9} {1:<20}{2}", task_names[i], task_params[i], task_descriptions[i])
-                }
+                print_help()
             }
             "view"=>{
                 println!("{0:<8} {1:<80}{2:<20}", "ID:", "Name:", "Status:");
                 for task in &tasks{
-                    println!("{}", &task.as_string());
+                    eprintln!("{}", &task.as_string());
                 }
             }
             "new"=>{
@@ -138,7 +143,7 @@ fn main() {
                     for arg in arguments.iter().skip(2){
                         if arg.len() > 80{
                             println!("Invalid task name: \"{}\"\nPlease ensure that all task name are under 80 characters", arg);
-                            exit(-1);
+                            exit(0);
                         }
                         tasks.push(Task { complete: false, name: arg.to_string(), id: index});
                         index += 1;
@@ -151,16 +156,14 @@ fn main() {
                     }
                 }
                 else{
-                    println!("Please provide at least one task to create");
-                    exit(-1)
+                    eprintln!("Please provide at least one task to create");
+                    exit(0)
                 }
-
-    
             },
             "complete"=>{
                 // ensure that at least one task id was provided and that each task id is valid
                 if arguments.len() < 3{
-                    println!("Please provide at least one task ID to complete")
+                    eprintln!("Please provide at least one task ID to complete")
                 }
                 let mut id_list: Vec<i32> = Vec::new(); 
                 let result = parse_task_ids(&arguments, &mut id_list, (tasks.len() - 1) as i32);
@@ -177,16 +180,16 @@ fn main() {
                         }
                     }
                     Err(_)=>{
-                        println!("Invalid Task ID");
-                        exit(-1)
+                        eprintln!("Invalid Task ID");
+                        exit(0)
                     }
                 }
             },
             "del"=>{
                 // ensure exacty one ID was provided and that it's valid
                 if arguments.len() < 3{
-                    println!("Please provide at least one task ID to delete");
-                    exit(-1)
+                    eprintln!("Please provide at least one task ID to delete");
+                    exit(0)
                 }
                 let mut id_list: Vec<i32> = Vec::new();
                 let result = parse_task_ids(&arguments, &mut id_list, (tasks.len() - 1) as i32);
@@ -208,13 +211,14 @@ fn main() {
                         }
                     }
                     Err(_)=>{
-                        println!("Invalid task ID");
-                        exit(-1)
+                        eprintln!("Invalid task ID");
+                        exit(0)
                     }
                 }
             }
             _=>{
-                print!("\"{}\" is not a valid command", arguments[1]);
+                println!("\"{}\" is not a valid command", arguments[1]);
+                print_help();
             }
         }
         write_task_file(&file_path.to_string(), &tasks).unwrap()
